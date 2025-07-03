@@ -15,7 +15,6 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "kgquiz-dashboard": "workspace:*",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
