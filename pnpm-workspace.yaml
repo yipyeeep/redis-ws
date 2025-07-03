@@ -1,0 +1,5 @@
+packages:
+  - 'discord-bot'
+  - 'ws-server'
+  - 'kgquiz-dashboard'
+  
