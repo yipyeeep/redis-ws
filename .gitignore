@@ -17,3 +17,7 @@
 # typescript
 **/*.tsbuildinfo
 **/next-env.d.ts
+
+# Ignore Docker installers
+*.dmg
+*.pkg

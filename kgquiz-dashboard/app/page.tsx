@@ -1,33 +1,43 @@
 "use client"
-
-import Image from "next/image";
 import { useEffect, useState } from 'react';
 
+type QuizEvent = {
+  type: string;
+  question?: string;
+  answer?: string;
+  user?: string;
+};
+
 export default function Home() {
-  const [message, setMessage] = useState('');
+  const [event, setEvent] = useState<QuizEvent | null>(null);
 
-  // pages/index.js
   useEffect(() => {
-  const ws = new WebSocket('ws://localhost:8080'); // ← Match your server port
+    const ws = new WebSocket('ws://localhost:8080');
 
-  ws.onopen = () => {
-    console.log('Connected to WebSocket server!');
-    ws.send('Hello from browser');
-  };
+    ws.onmessage = (e) => {
+      setEvent(JSON.parse(e.data));
+    };
 
-  ws.onmessage = (e) => {
-    console.log('Message from server:', e.data);
-    setMessage(e.data);
-  };
-
-  ws.onerror = (e) => console.error('WebSocket error:', e);
-}, []);
+    return () => ws.close();
+  }, []);
 
   return (
     <div>
-      <h1>WebSocket Test</h1>
-      <p>Last message: {message}</p>
+      <h1>KG Quiz Live Dashboard</h1>
+      
+      {event?.type === 'QUESTION' && (
+        <div>
+          <h3>Current Question:</h3>
+          <p>{event.question}</p>
+          <p>Answer: {event.answer}</p>
+        </div>
+      )}
+
+      {event?.type === 'ANSWER_ATTEMPT' && (
+        <div>
+          <p>{event.user} guessed: {event.answer}</p>
+        </div>
+      )}
     </div>
   );
 }
-
