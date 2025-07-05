@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 
 type QuizEvent = {
   type: string;
-  question?: string;
-  answer?: string;
+  message?: string;
+  timestamp?: string;
   user?: string;
 };
 
@@ -25,17 +25,17 @@ export default function Home() {
     <div>
       <h1>KG Quiz Live Dashboard</h1>
       
-      {event?.type === 'QUESTION' && (
+      {event?.type === 'PONG' && (
         <div>
-          <h3>Current Question:</h3>
-          <p>{event.question}</p>
-          <p>Answer: {event.answer}</p>
+          <h3>Current Message:</h3>
+          <p>{event.message}</p>
+          <p>Timestamp: {event.timestamp}</p>
         </div>
       )}
 
-      {event?.type === 'ANSWER_ATTEMPT' && (
+      {event?.type === 'ANSWER_TIME' && (
         <div>
-          <p>{event.user} guessed: {event.answer}</p>
+          <p>{event.user} guessed: {event.timestamp}</p>
         </div>
       )}
     </div>

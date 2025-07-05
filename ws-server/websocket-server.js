@@ -2,16 +2,19 @@ const WebSocket = require('ws');
 const redis = require('redis');
 
 const wss = new WebSocket.Server({ port: 8080 });
-const redisClient = redis.createClient();
+const redisSubscriber = redis.createClient({ 
+  socket: { host: 'localhost', port: 6379 } 
+});
 
 // Connect to Redis
-redisClient.connect().then(() => {
-  console.log('Connected to Redis');
-  redisClient.subscribe('kg_quiz', (message) => {
-    // Broadcast Redis messages to all WebSocket clients
-    wss.clients.forEach((client) => {
+redisSubscriber.connect().then(() => {
+  console.log('Redis subscriber connected');
+  redisSubscriber.subscribe('test_channel', (message) => {
+    console.log('Redis ->', message);
+    // Broadcast to all WebSocket clients
+    wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
+        client.send(JSON.stringify(message));
       }
     });
   });
