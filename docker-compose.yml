@@ -6,19 +6,45 @@ services:
     volumes:
       - redis_data:/data  # Persistent Redis data
 
+  websocket-server:
+    build: ./websocket-server
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PORT=8080
+    depends_on:
+      - redis
+    volumes:
+      - ./websocket-server:/app
+      - /app/node_modules
+
   nextjs:
     build: ./kgquiz-dashboard
     ports:
       - "3000:3000"
     environment:
+      - NEXT_PUBLIC_WS_URL=http://websocket-server:8080
       - REDIS_URL=redis://redis:6379
     depends_on:
       - redis
+      - websocket-server
     volumes:
       - ./kgquiz-dashboard:/app
       - /app/node_modules             # Isolate host/node_modules
       - /app/.next                    # Isolate Next.js cache
     working_dir: /app
+
+  discord-bot:
+    build: ./discord-bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    volumes:
+      - ./discord-bot:/app
+      - /app/node_modules
 
 volumes:
   redis_data:  # Named volume for Redis persistence

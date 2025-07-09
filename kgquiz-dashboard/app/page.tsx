@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import  io, { Socket }  from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 
 type QuizEvent = {
   type: string;
@@ -19,9 +19,12 @@ export default function Home() {
 
   useEffect(() => {
     // Initialize Socket.IO connection
-    const newSocket = io('http://localhost:8080', {
+    const newSocket = io(process.env.NEXT_PUBLIC_WS_URL || 'http://localhost:8080', {
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      transports: ['websocket', 'polling'], // Allow both transports for better compatibility
+      path: '/socket.io/',
+      autoConnect: true
     });
 
     setSocket(newSocket);
